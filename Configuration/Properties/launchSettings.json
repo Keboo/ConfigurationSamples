@@ -1,0 +1,12 @@
+{
+  "profiles": {
+    "Default": {
+      "commandName": "Project",
+      "commandLineArgs": ""
+    },
+    "Other Service": {
+      "commandName": "Project",
+      "commandLineArgs": "--serviceUrl http://myotherservice.com"
+    }
+  }
+}

@@ -6,6 +6,7 @@ builder.AddInMemoryCollection(new Dictionary<string, string?>
 {
     ["serviceUrl"] = "http://myurl.com"
 });
+builder.AddCommandLine(args);
 
 IConfigurationRoot configuration = builder.Build();
 

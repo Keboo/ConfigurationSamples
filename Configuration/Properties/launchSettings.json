@@ -2,11 +2,22 @@
   "profiles": {
     "Default": {
       "commandName": "Project",
-      "commandLineArgs": ""
+      "commandLineArgs": "",
+      "environmentVariables": {
+      }
+    },
+    "Development": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Development"
+      }
     },
     "Other Service": {
       "commandName": "Project",
-      "commandLineArgs": "--serviceUrl http://myotherservice.com"
+      //"commandLineArgs": "--serviceUrl http://myotherservice.com",
+      "environmentVariables": {
+        "DOTNET_ENVIRONMENT": "Custom"
+      }
     }
   }
 }

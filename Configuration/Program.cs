@@ -1,4 +1,4 @@
-﻿// See https://aka.ms/new-console-template for more information
+// See https://aka.ms/new-console-template for more information
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -14,10 +14,10 @@ using IHost host = Host.CreateDefaultBuilder()
     })
     .ConfigureAppConfiguration((hostingContext, config) =>
     {
-        config.AddInMemoryCollection(new Dictionary<string, string?>
-        {
-            ["WebServices:ServiceUrl"] = "http://myurl.com"
-        });
+        //config.AddInMemoryCollection(new Dictionary<string, string?>
+        //{
+        //    ["WebServices:ServiceUrl"] = "http://myurl.com"
+        //});
     })
     .ConfigureServices(services =>
     {
@@ -28,11 +28,11 @@ using IHost host = Host.CreateDefaultBuilder()
     })
     .Build();
 
+//There is also IOptionsSnapshot, that recomputes on each DI resolution
+IOptionsMonitor<WebServices> webServices = host.Services.GetRequiredService<IOptionsMonitor<WebServices>>();
 do
 {
-    IOptions<WebServices> webServices = host.Services.GetRequiredService<IOptions<WebServices>>();
-
-    Console.WriteLine($"Service URL: {webServices.Value.ServiceUrl}");
+    Console.WriteLine($"Service URL: {webServices.CurrentValue.ServiceUrl}");
 
     Console.WriteLine("Press ESC to exit");
 } while (Console.ReadKey().Key != ConsoleKey.Escape);
@@ -45,4 +45,10 @@ public sealed record WebServices
 
     [Required]
     public required Uri ServiceUrl { get; set; }
+}
+
+[OptionsValidator]
+public partial class WebServicesValidator : IValidateOptions<WebServices>
+{
+    
 }

@@ -9,7 +9,8 @@
     "Development": {
       "commandName": "Project",
       "environmentVariables": {
-        "DOTNET_ENVIRONMENT": "Development"
+        "DOTNET_ENVIRONMENT": "Development",
+        //"WebServices__ServiceUrl": "http://env-service-url.com"
       }
     },
     "Other Service": {

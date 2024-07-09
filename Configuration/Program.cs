@@ -1,4 +1,4 @@
-// See https://aka.ms/new-console-template for more information
+﻿// See https://aka.ms/new-console-template for more information
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -21,8 +21,20 @@ using IHost host = Host.CreateDefaultBuilder()
     })
     .ConfigureServices(services =>
     {
+        services.AddTransient<MyCoolConfigService>();
+
         services.AddOptions<WebServices>()
+                //There is also .Configure
+                .PostConfigure<IConfiguration, MyCoolConfigService>((webServices, configuration, myServices) =>
+                {
+                    webServices.ServiceUrl = new Uri(webServices.ServiceUrl.AbsoluteUri + myServices.GetValue());
+                })
                 .BindConfiguration(WebServices.SectionName)
+                .ValidateDataAnnotations()
+                .ValidateOnStart();
+
+        services.AddOptions<WebServices>(WebServices.OtherSectionName)
+                .BindConfiguration(WebServices.OtherSectionName)
                 .ValidateDataAnnotations()
                 .ValidateOnStart();
     })
@@ -32,7 +44,8 @@ using IHost host = Host.CreateDefaultBuilder()
 IOptionsMonitor<WebServices> webServices = host.Services.GetRequiredService<IOptionsMonitor<WebServices>>();
 do
 {
-    Console.WriteLine($"Service URL: {webServices.CurrentValue.ServiceUrl}");
+    WebServices other = webServices.Get(WebServices.OtherSectionName);
+    Console.WriteLine($"Service URL: {other.ServiceUrl}");
 
     Console.WriteLine("Press ESC to exit");
 } while (Console.ReadKey().Key != ConsoleKey.Escape);
@@ -42,9 +55,15 @@ do
 public sealed record WebServices
 {
     public const string SectionName = "WebServices";
+    public const string OtherSectionName = "OtherServices";
 
     [Required]
     public required Uri ServiceUrl { get; set; }
+}
+
+public class MyCoolConfigService
+{
+    public string GetValue() => "42";
 }
 
 [OptionsValidator]
